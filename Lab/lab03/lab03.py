@@ -1,24 +1,8 @@
-LAB_SOURCE_FILE = __file__
+SOURCE_FILE = __file__
 
 
-def print_if(s, f):
-    """Print each element of s for which f returns a true value.
-
-    >>> print_if([3, 4, 5, 6], lambda x: x > 4)
-    5
-    6
-    >>> result = print_if([3, 4, 5, 6], lambda x: x % 2 == 0)
-    4
-    6
-    >>> print(result)  # print_if should return None
-    None
-    """
-    for x in s:
-        "*** YOUR CODE HERE ***"
-
-
-def close(s, k):
-    """Return how many elements of s that are within k of their index.
+def close(s: list[int], k: int) -> int:
+    """Return how many elements of s are within k of their index.
 
     >>> t = [6, 2, 4, 3, 5]
     >>> close(t, 0)  # Only 3 is equal to its index
@@ -30,13 +14,15 @@ def close(s, k):
     >>> close(list(range(10)), 0)
     10
     """
+    assert k >= 0
     count = 0
     for i in range(len(s)):  # Use a range to loop over indices
-        "*** YOUR CODE HERE ***"
+        if abs(i-s[i]) <= k:
+            count += 1
     return count
 
 
-def close_list(s, k):
+def close_list(s: list[int], k: int) -> list[int]:
     """Return a list of the elements of s that are within k of their index.
 
     >>> t = [6, 2, 4, 3, 5]
@@ -47,26 +33,11 @@ def close_list(s, k):
     >>> close_list(t, 2)  # 2, 3, 4, and 5 are all within 2 of their index
     [2, 4, 3, 5]
     """
-    return [___ for i in range(len(s)) if ___]
+    assert k >= 0
+    return [s[i] for i in range(len(s)) if abs(i - s[i]) <= k]
 
 
-from math import sqrt
-
-def squares(s):
-    """Returns a new list containing square roots of the elements of the
-    original list that are perfect squares.
-
-    >>> seq = [8, 49, 8, 9, 2, 1, 100, 102]
-    >>> squares(seq)
-    [7, 3, 1, 10]
-    >>> seq = [500, 30]
-    >>> squares(seq)
-    []
-    """
-    return [___ for n in s if ___]
-
-
-def double_eights(n):
+def double_eights(n: int) -> bool:
     """Returns whether or not n has two digits in row that
     are the number 8.
 
@@ -82,12 +53,17 @@ def double_eights(n):
     True
     >>> double_eights(78)
     False
-    >>> # ban iteration
+    >>> # ban iteration, in operator and str function 
     >>> from construct_check import check
-    >>> check(LAB_SOURCE_FILE, 'double_eights', ['While', 'For'])
+    >>> check(SOURCE_FILE, 'double_eights', ['While', 'For', 'In', 'Str'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if n % 10 ==8 and n // 10 % 10 == 8:
+        return True
+    if n < 10: 
+        return False
+    else:
+        return double_eights(n//10) 
 
 
 def make_onion(f, g):
@@ -116,10 +92,66 @@ def make_onion(f, g):
     """
     def can_reach(x, y, limit):
         if limit < 0:
-            return ____
+            return False
         elif x == y:
-            return ____
+            return True
         else:
-            return can_reach(____, ____, limit - 1) or can_reach(____, ____, limit - 1)
+            return can_reach(f(x), y, limit - 1) or can_reach(g(x), y, limit - 1)
     return can_reach
+
+
+def make_func_repeater(f, x):
+    """
+    >>> increment_repeater = make_func_repeater(lambda x: x + 1, 1)
+    >>> increment_repeater(2) #same as f(f(x))
+    3
+    >>> increment_repeater(5)
+    6
+    """
+    def repeat(n):
+        if n == 1:
+            return f(x)
+        else:
+            return f(repeat(n-1))
+    return repeat
+
+
+def ten_pairs(n):
+    """Return the number of ten-pairs within positive integer n.
+
+    >>> ten_pairs(7823952) # 7+3, 8+2, and 8+2
+    3
+    >>> ten_pairs(55055)
+    6
+    >>> ten_pairs(9641469) # 9+1, 6+4, 6+4, 4+6, 1+9, 4+6 
+    6
+    >>> # ban iteration
+    >>> from construct_check import check
+    >>> check(SOURCE_FILE, 'ten_pairs', ['While', 'For'])
+    True
+    """
+    if n <= 0:
+        return 0
+    else:
+        rest = n // 10
+        last = n % 10
+        return count_digit(rest,10-last) + ten_pairs(rest)
+
+
+def count_digit(n, digit):
+    """Return how many times digit appears in n.
+
+    >>> count_digit(55055, 5) # digit 5 appears 4 times in 55055
+    4
+    >>> from construct_check import check
+    >>> # ban iteration
+    >>> check(SOURCE_FILE, 'count_digits', ['While', 'For'])
+    True
+    """
+    if n == digit:
+        return 1
+    elif n < 10 and n != digit:
+        return 0
+    else:
+        return count_digit(n%10,digit) + count_digit(n//10,digit)
 

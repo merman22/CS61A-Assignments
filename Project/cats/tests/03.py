@@ -7,47 +7,34 @@ test = {
         {
           'code': r"""
           >>> accuracy("12345", "12345") # This should return 100.0 (not the integer 100!)
-          3a2c23041705bff52731f6d71741b6a2
-          # locked
+          100.0
           >>> accuracy("a b c", "a b c")
-          3a2c23041705bff52731f6d71741b6a2
-          # locked
+          100.0
           >>> accuracy("a  b  c  d", "b  a  c  d")
-          9bea7599ced675a50bbbcbf6a41ff02c
-          # locked
+          50.0
           >>> accuracy("a b", "c d e")
-          427fe1a667819805b038e0f2bfdfb7af
-          # locked
+          0.0
           >>> accuracy("Cat", "cat") # the function is case-sensitive
-          427fe1a667819805b038e0f2bfdfb7af
-          # locked
+          0.0
           >>> accuracy("a b c d", "a d")
-          5eadfda7f07bc5c45d272ba0f6b923b2
-          # locked
+          25.0
           >>> accuracy("abc", " ")
-          427fe1a667819805b038e0f2bfdfb7af
-          # locked
+          0.0
           >>> accuracy("a b \tc" , "a b c") # Tabs don't count as words
-          3a2c23041705bff52731f6d71741b6a2
-          # locked
+          100.0
           >>> accuracy("abc", "")
-          427fe1a667819805b038e0f2bfdfb7af
-          # locked
+          0.0
           >>> accuracy("", "abc")
-          427fe1a667819805b038e0f2bfdfb7af
-          # locked
+          0.0
           >>> accuracy("a b c d", "b c d")
-          427fe1a667819805b038e0f2bfdfb7af
-          # locked
+          0.0
           >>> accuracy("cats.", "cats") # punctuation counts
-          427fe1a667819805b038e0f2bfdfb7af
-          # locked
+          0.0
           >>> accuracy("", "") # Returns 100.0
-          3a2c23041705bff52731f6d71741b6a2
-          # locked
+          100.0
           """,
           'hidden': False,
-          'locked': True,
+          'locked': False,
           'multiline': False
         },
         {
@@ -74,21 +61,21 @@ test = {
         {
           'code': r"""
           >>> source_text = "Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art."
-          >>> typed_string1 = "Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art."
-          >>> typed_string2 = "Abstraction, in general, is a fundamentl concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction usd in other fields such as art."
-          >>> typed_string3 = "Abstraction,"
-          >>> typed_string4 = "Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art. extra"
-          >>> typed_string5 = "Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art. Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art. art"
-          >>> typed_string6 = "abstraction"
-          >>> round(accuracy(typed_string2, source_text), 1)
+          >>> entered_string1 = "Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art."
+          >>> entered_string2 = "Abstraction, in general, is a fundamentl concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction usd in other fields such as art."
+          >>> entered_string3 = "Abstraction,"
+          >>> entered_string4 = "Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art. extra"
+          >>> entered_string5 = "Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art. Abstraction, in general, is a fundamental concept to computer science and software development. The process of abstraction can also be referred to as modeling and is closely related to the concepts of theory and design. Models can also be considered types of abstractions per their generalization of aspects of reality. Abstraction in computer science is also closely related to abstraction in mathematics due to their common focus on building abstractions as objects, but is also related to other notions of abstraction used in other fields such as art. art"
+          >>> entered_string6 = "abstraction"
+          >>> round(accuracy(entered_string2, source_text), 1)
           97.7
-          >>> round(accuracy(typed_string3, source_text), 1)
+          >>> round(accuracy(entered_string3, source_text), 1)
           100.0
-          >>> round(accuracy(typed_string4, source_text), 1)
+          >>> round(accuracy(entered_string4, source_text), 1)
           98.9
-          >>> round(accuracy(typed_string5, source_text), 1)
+          >>> round(accuracy(entered_string5, source_text), 1)
           49.7
-          >>> round(accuracy(typed_string6, source_text), 1)
+          >>> round(accuracy(entered_string6, source_text), 1)
           0.0
           """,
           'hidden': False,

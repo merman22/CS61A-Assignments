@@ -1,22 +1,26 @@
 from operator import add, mul
 
-square = lambda x: x * x
+def square(x):
+    return x * x
 
-identity = lambda x: x
+def identity(x):
+    return x
 
-triple = lambda x: 3 * x
+def triple(x):
+    return 3 * x
 
-increment = lambda x: x + 1
+def increment(x):
+    return x + 1
 
 
-HW_SOURCE_FILE=__file__
+SOURCE_FILE = __file__
 
 
 def product(n, term):
     """Return the product of the first n terms in a sequence.
 
     n: a positive integer
-    term:  a function that takes one argument to produce the term
+    term: a function that takes an index as input and produces a term
 
     >>> product(3, identity)  # 1 * 2 * 3
     6
@@ -31,7 +35,12 @@ def product(n, term):
     >>> product(3, triple)    # 1*3 * 2*3 * 3*3
     162
     """
-    "*** YOUR CODE HERE ***"
+    i = 0
+    pro = 1
+    while(i < n):
+        i += 1
+        pro = pro * term(i)
+    return pro
 
 
 def accumulate(fuse, start, n, term):
@@ -53,7 +62,12 @@ def accumulate(fuse, start, n, term):
     >>> accumulate(lambda x, y: x + y + 1, 2, 3, square)
     19
     """
-    "*** YOUR CODE HERE ***"
+    total = start
+    i = 0
+    while(i < n):
+        i += 1
+        total = fuse(total, term(i))
+    return total 
 
 
 def summation_using_accumulate(n, term):
@@ -68,7 +82,7 @@ def summation_using_accumulate(n, term):
     >>> [type(x).__name__ for x in ast.parse(inspect.getsource(summation_using_accumulate)).body[0].body]
     ['Expr', 'Return']
     """
-    return ____
+    return accumulate(add, 0, n, term)
 
 
 def product_using_accumulate(n, term):
@@ -83,7 +97,7 @@ def product_using_accumulate(n, term):
     >>> [type(x).__name__ for x in ast.parse(inspect.getsource(product_using_accumulate)).body[0].body]
     ['Expr', 'Return']
     """
-    return ____
+    return accumulate(mul, 1, n, term)
 
 
 def make_repeater(f, n):
@@ -99,5 +113,10 @@ def make_repeater(f, n):
     >>> make_repeater(square, 3)(5) # square(square(square(5)))
     390625
     """
-    "*** YOUR CODE HERE ***"
-
+    def h(x):
+        i = 0
+        while(i < n):
+            i += 1
+            x = f(x)
+        return x
+    return h

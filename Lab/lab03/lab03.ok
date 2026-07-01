@@ -1,6 +1,6 @@
 {
     "name": "Lab 3",
-    "endpoint": "cal/cs61a/fa24/lab03",
+    "endpoint": "cal/cs61a/sp26/lab03",
     "src": [
         "lab03.py"
     ],
@@ -10,11 +10,9 @@
     },
     "default_tests": [
         "lists-wwpd",
-        "print_if",
         "close",
         "list-comprehensions-wwpd",
         "close_list",
-        "squares",
         "double_eights",
         "make_onion"
     ],

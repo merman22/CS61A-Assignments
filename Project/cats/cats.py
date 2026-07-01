@@ -18,14 +18,14 @@ import random
 ###########
 
 
-def pick(paragraphs, select, k):
-    """Return the Kth paragraph from PARAGRAPHS for which the SELECT returns True.
+def pick(paragraphs: list[str], select, k: int) -> str:
+    """Return the Kth paragraph from PARAGRAPHS for which the SELECT function returns True.
     If there are fewer than K such paragraphs, return an empty string.
 
     Arguments:
         paragraphs: a list of strings representing paragraphs
         select: a function that returns True for paragraphs that meet its criteria
-        k: an integer
+        k: an integer representing which paragraph to return
 
     >>> ps = ['hi', 'how are you', 'fine']
     >>> s = lambda p: len(p) <= 4
@@ -37,16 +37,22 @@ def pick(paragraphs, select, k):
     ''
     """
     # BEGIN PROBLEM 1
-    "*** YOUR CODE HERE ***"
+    count = 0
+    for s in paragraphs:
+        if select(s):
+            count += 1
+            if count == k + 1:
+                return s
+    return ''
     # END PROBLEM 1
 
 
-def about(subject):
+def about(keywords: list[str]):
     """Return a function that takes in a paragraph and returns whether
-    that paragraph contains one of the words in SUBJECT.
+    that paragraph contains one of the words in keywords.
 
     Arguments:
-        subject: a list of words related to a subject
+        keywords: a list of keywords
 
     >>> about_dogs = about(['dog', 'dogs', 'pup', 'puppy'])
     >>> pick(['Cute Dog!', 'That is a cat.', 'Nice pup!'], about_dogs, 0)
@@ -54,19 +60,26 @@ def about(subject):
     >>> pick(['Cute Dog!', 'That is a cat.', 'Nice pup.'], about_dogs, 1)
     'Nice pup.'
     """
-    assert all([lower(x) == x for x in subject]), "subjects should be lowercase."
+    assert all([lower(x) == x for x in keywords]), "keywords should be lowercase."
 
     # BEGIN PROBLEM 2
-    "*** YOUR CODE HERE ***"
+    def select(words: list[str]) -> bool:
+        words = split(lower(remove_punctuation(words)))
+        for s in words:
+            for kw in keywords:
+                if s == kw:
+                    return True
+        return False
+    return select
     # END PROBLEM 2
 
 
-def accuracy(typed, source):
-    """Return the accuracy (percentage of words typed correctly) of TYPED
+def accuracy(entered: str, source: str) -> float:
+    """Return the accuracy (percentage of words entered correctly) of ENTERED
     compared to the corresponding words in SOURCE.
 
     Arguments:
-        typed: a string that may contain typos
+        entered: a string that may contain typos
         source: a model string without errors
 
     >>> accuracy('Cute Dog!', 'Cute Dog.')
@@ -84,18 +97,30 @@ def accuracy(typed, source):
     >>> accuracy('', '')
     100.0
     """
-    typed_words = split(typed)
+    entered_words = split(entered)
     source_words = split(source)
     # BEGIN PROBLEM 3
-    "*** YOUR CODE HERE ***"
+    i = 0
+    count = 0
+    while i < len(entered_words) and i < len(source_words):
+        if entered_words[i] == source_words[i]:
+            count +=1
+        i += 1
+    if len(entered_words)==0 and len(source_words)==0:
+        return 100.0
+    elif len(entered_words)==0 and len(source_words)!=0:
+        return 0.0
+    else:
+        return 100.0*count/len(entered_words)
+        
     # END PROBLEM 3
 
 
-def wpm(typed, elapsed):
-    """Return the words-per-minute (WPM) of the TYPED string.
+def wpm(entered: str, elapsed: int) -> float:
+    """Return the words-per-minute (WPM) of the ENTERED string.
 
     Arguments:
-        typed: an entered string
+        entered: an entered string
         elapsed: an amount of time in seconds
 
     >>> wpm('hello friend hello buddy hello', 15)
@@ -105,7 +130,7 @@ def wpm(typed, elapsed):
     """
     assert elapsed > 0, "Elapsed time must be positive"
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    return len(entered)/5/elapsed * 60.0
     # END PROBLEM 4
 
 
@@ -133,7 +158,7 @@ def memo_diff(diff_function):
     """A memoization function."""
     cache = {}
 
-    def memoized(typed, source, limit):
+    def memoized(entered, source, limit):
         # BEGIN PROBLEM EC
         "*** YOUR CODE HERE ***"
         # END PROBLEM EC
@@ -146,14 +171,14 @@ def memo_diff(diff_function):
 ###########
 
 
-def autocorrect(typed_word, word_list, diff_function, limit):
+def autocorrect(entered_word: str, word_list: list[str], diff_function, limit: int) -> str:
     """Returns the element of WORD_LIST that has the smallest difference
-    from TYPED_WORD based on DIFF_FUNCTION. If multiple words are tied for the smallest difference,
+    from ENTERED_WORD based on DIFF_FUNCTION. If multiple words are tied for the smallest difference,
     return the one that appears closest to the front of WORD_LIST. If the
-    difference is greater than LIMIT, return TYPED_WORD instead.
+    lowest difference is greater than LIMIT, return ENTERED_WORD instead.
 
     Arguments:
-        typed_word: a string representing a word that may contain typos
+        entered_word: a string representing a word that may contain typos
         word_list: a list of strings representing source words
         diff_function: a function quantifying the difference between two words
         limit: a number
@@ -166,17 +191,32 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     'testing'
     """
     # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+    if entered_word in word_list:
+        return entered_word
+    
+    min_diff = limit + 1
+    enhance = entered_word
+    
+    for s in word_list:
+        diff = diff_function(entered_word, s, limit)
+        if  diff < min_diff:
+            min_diff = diff
+            enhance = s
+    if min_diff > limit:
+        return entered_word
+    else:
+        return enhance
+
     # END PROBLEM 5
 
 
-def furry_fixes(typed, source, limit):
+def furry_fixes(entered: str, source: str, limit: int) -> int:
     """A diff function for autocorrect that determines how many letters
-    in TYPED need to be substituted to create SOURCE, then adds the difference in
-    their lengths and returns the result.
+    in ENTERED need to be substituted to create SOURCE, then adds the difference in
+    their lengths to this value and returns the result.
 
     Arguments:
-        typed: a starting word
+        entered: a starting word
         source: a string representing a desired goal word
         limit: a number representing an upper bound on the number of chars that must change
 
@@ -193,16 +233,24 @@ def furry_fixes(typed, source, limit):
     5
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    def helper(e, s, changes):
+
+        if changes > limit:
+            return changes
+        elif not e or not s:
+            return changes + abs(len(e)-len(s))
+        changes = changes + (e[0]!=s[0])
+        return helper(e[1:], s[1:], changes)
+    return helper(entered, source, 0)
     # END PROBLEM 6
 
 
-def minimum_mewtations(typed, source, limit):
-    """A diff function for autocorrect that computes the edit distance from TYPED to SOURCE.
-    This function takes in a string TYPED, a string SOURCE, and a number LIMIT.
+def minimum_mewtations(entered: str, source: str, limit: int) -> int:
+    """A diff function for autocorrect that computes the edit distance from ENTERED to SOURCE.
+    This function takes in a string ENTERED, a string SOURCE, and a number LIMIT.
 
     Arguments:
-        typed: a starting word
+        entered: a starting word
         source: a string representing a desired goal word
         limit: a number representing an upper bound on the number of edits
 
@@ -237,8 +285,8 @@ def minimum_mewtations(typed, source, limit):
 minimum_mewtations = count(minimum_mewtations)
 
 
-def final_diff(typed, source, limit):
-    """A diff function that takes in a string TYPED, a string SOURCE, and a number LIMIT.
+def final_diff(entered: str, source: str, limit: int) -> int:
+    """A diff function that takes in a string ENTERED, a string SOURCE, and a number LIMIT.
     If you implement this function, it will be used."""
     assert False, "Remove this line to use your final_diff function."
 
@@ -251,12 +299,12 @@ FINAL_DIFF_LIMIT = 6  # REPLACE THIS WITH YOUR LIMIT
 ###########
 
 
-def report_progress(typed, source, user_id, upload):
+def report_progress(entered: list[str], source: list[str], user_id: int, upload) -> float:
     """Upload a report of your id and progress so far to the multiplayer server.
     Returns the progress so far.
 
     Arguments:
-        typed: a list of the words typed so far
+        entered: a list of the words entered so far
         source: a list of the words in the typing source
         user_id: a number representing the id of the current user
         upload: a function used to upload progress to the multiplayer server
@@ -265,9 +313,9 @@ def report_progress(typed, source, user_id, upload):
     >>> # The above function displays progress in the format ID: __, Progress: __
     >>> print_progress({'id': 1, 'progress': 0.6})
     ID: 1 Progress: 0.6
-    >>> typed = ['how', 'are', 'you']
+    >>> entered = ['how', 'are', 'you']
     >>> source = ['how', 'are', 'you', 'doing', 'today']
-    >>> report_progress(typed, source, 2, print_progress)
+    >>> report_progress(entered, source, 2, print_progress)
     ID: 2 Progress: 0.6
     0.6
     >>> report_progress(['how', 'aree'], source, 3, print_progress)
@@ -279,15 +327,15 @@ def report_progress(typed, source, user_id, upload):
     # END PROBLEM 8
 
 
-def time_per_word(words, timestamps_per_player):
+def time_per_word(words: list[str], timestamps_per_player: list[list[int]]) -> dict:
     """Return a dictionary {'words': words, 'times': times} where times
     is a list of lists that stores the durations it took each player to type
     each word in words.
 
     Arguments:
-        words: a list of words, in the order they are typed.
+        words: a list of words, in the order they are entered.
         timestamps_per_player: A list of lists of timestamps including the time
-                          the player started typing, followed by the time the
+                          each player started typing, followed by the time each
                           player finished typing each word.
 
     >>> p = [[75, 81, 84, 90, 92], [19, 29, 35, 36, 38]]
@@ -297,19 +345,20 @@ def time_per_word(words, timestamps_per_player):
     >>> result['times']
     [[6, 3, 6, 2], [10, 6, 1, 2]]
     """
-    tpp = timestamps_per_player  # A shorter name (for convenience)
+    ts_by_player = timestamps_per_player  # A shorter name (for convenience)
     # BEGIN PROBLEM 9
     times = []  # You may remove this line
     # END PROBLEM 9
     return {'words': words, 'times': times}
 
 
-def fastest_words(words_and_times):
-    """Return a list of lists indicating which words each player typed fastests.
+def fastest_words(words_and_times: dict) -> list[list[str]]:
+    """Return a list of lists indicating which words each player entered fastest.
+    In case of a tie, the player with the lower index is considered to be the one who entered it the fastest.
 
     Arguments:
         words_and_times: a dictionary {'words': words, 'times': times} where
-        words is a list of the words typed and times is a list of lists of times
+        words is a list of the words entered and times is a list of lists of times
         spent by each player typing each word.
 
     >>> p0 = [5, 1, 3]
@@ -323,8 +372,8 @@ def fastest_words(words_and_times):
     """
     check_words_and_times(words_and_times)  # verify that the input is properly formed
     words, times = words_and_times['words'], words_and_times['times']
-    player_indices = range(len(times))  # contains an *index* for each player
-    word_indices = range(len(words))    # contains an *index* for each word
+    pl_idxs = range(len(times))  # contains an *index* for each player
+    w_idxs = range(len(words))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
     # END PROBLEM 10
@@ -378,16 +427,16 @@ def run_typing_test(topics):
         print()
 
         start = datetime.now()
-        typed = input()
-        if not typed:
+        entered = input()
+        if not entered:
             print("Goodbye.")
             return
         print()
 
         elapsed = (datetime.now() - start).total_seconds()
         print("Nice work!")
-        print("Words per minute:", wpm(typed, elapsed))
-        print("Accuracy:        ", accuracy(typed, source))
+        print("Words per minute:", wpm(entered, elapsed))
+        print("Accuracy:        ", accuracy(entered, source))
 
         print("\nPress enter/return for the next paragraph or type q to quit.")
         if input().strip() == "q":

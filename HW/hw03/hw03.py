@@ -1,8 +1,8 @@
-HW_SOURCE_FILE = __file__
+SOURCE_FILE = __file__
 
 
-def num_eights(n):
-    """Returns the number of times 8 appears as a digit of n.
+def num_eights(num):
+    """Returns the number of times 8 appears as a digit of num.
 
     >>> num_eights(3)
     0
@@ -20,15 +20,20 @@ def num_eights(n):
     3
     >>> from construct_check import check
     >>> # ban all assignment statements
-    >>> check(HW_SOURCE_FILE, 'num_eights',
+    >>> check(SOURCE_FILE, 'num_eights',
     ...       ['Assign', 'AnnAssign', 'AugAssign', 'NamedExpr', 'For', 'While'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if num % 10 == 8:
+        return 1 + num_eights(num//10)
+    elif num < 10:
+        return 0
+    else :
+        return num_eights(num//10)
 
 
-def digit_distance(n):
-    """Determines the digit distance of n.
+def digit_distance(num):
+    """Determines the digit distance of num.
 
     >>> digit_distance(3)
     0
@@ -42,16 +47,18 @@ def digit_distance(n):
     16
     >>> from construct_check import check
     >>> # ban all loops
-    >>> check(HW_SOURCE_FILE, 'digit_distance',
+    >>> check(SOURCE_FILE, 'digit_distance',
     ...       ['For', 'While'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if num >= 10:
+        return abs(num%10-num%100//10) + digit_distance(num//10)
+    else:
+        return 0
 
-
-def interleaved_sum(n, odd_func, even_func):
-    """Compute the sum odd_func(1) + even_func(2) + odd_func(3) + ..., up
-    to n.
+def interleaved_sum(num, f_odd, f_even):
+    """Compute the sum f_odd(1) + f_even(2) + f_odd(3) + ..., up
+    to num.
 
     >>> identity = lambda x: x
     >>> square = lambda x: x * x
@@ -65,12 +72,30 @@ def interleaved_sum(n, odd_func, even_func):
     >>> interleaved_sum(4, square, triple)   # 1*1 + 2*3 + 3*3 + 4*3
     28
     >>> from construct_check import check
-    >>> check(HW_SOURCE_FILE, 'interleaved_sum', ['While', 'For', 'Mod']) # ban loops and %
+    >>> check(SOURCE_FILE, 'interleaved_sum', ['While', 'For', 'Mod']) # ban loops and %
     True
-    >>> check(HW_SOURCE_FILE, 'interleaved_sum', ['BitAnd', 'BitOr', 'BitXor']) # ban bitwise operators, don't worry about these if you don't know what they are
+    >>> check(SOURCE_FILE, 'interleaved_sum', ['BitAnd', 'BitOr', 'BitXor']) # ban bitwise operators, don't worry about these if you don't know what they are
     True
     """
-    "*** YOUR CODE HERE ***"
+    def is_even(n):
+        if n == 0:
+            return True
+        else: 
+            return is_odd(n-1)
+    def is_odd(n):
+        if n == 0:
+            return False
+        else: 
+            return is_even(n-1)
+    def exe(n):
+        if n < 0:
+            return 0
+        elif is_even(n):
+            return f_even(n) + exe(n-1)
+        else:
+            return f_odd(n) + exe(n-1)
+    return exe(num)
+
 
 
 def next_smaller_dollar(bill):
@@ -86,7 +111,7 @@ def next_smaller_dollar(bill):
     elif bill == 5:
         return 1
 
-def count_dollars(total):
+def count_dollars(sum_needed):
     """Return the number of ways to make change.
 
     >>> count_dollars(15)  # 15 $1 bills, 10 $1 & 1 $5 bills, ... 1 $5 & 1 $10 bills
@@ -103,10 +128,16 @@ def count_dollars(total):
     3274
     >>> from construct_check import check
     >>> # ban iteration
-    >>> check(HW_SOURCE_FILE, 'count_dollars', ['While', 'For'])
+    >>> check(SOURCE_FILE, 'count_dollars', ['While', 'For'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    def count_helper(remaining_sum, max_bill):
+        if remaining_sum == 0:
+            return 1
+        elif remaining_sum < 0 or max_bill is None:
+            return 0
+        return count_helper(remaining_sum-maxbill, maxbill) + count_helper(remaining_sum, next_smaller_dolar(max_bill))
+    return count_helper(sum_needed, 100)
 
 
 def next_larger_dollar(bill):
@@ -122,7 +153,7 @@ def next_larger_dollar(bill):
     elif bill == 50:
         return 100
 
-def count_dollars_upward(total):
+def count_dollars_upward(sum_needed):
     """Return the number of ways to make change using bills.
 
     >>> count_dollars_upward(15)  # 15 $1 bills, 10 $1 & 1 $5 bills, ... 1 $5 & 1 $10 bills
@@ -139,7 +170,7 @@ def count_dollars_upward(total):
     3274
     >>> from construct_check import check
     >>> # ban iteration
-    >>> check(HW_SOURCE_FILE, 'count_dollars_upward', ['While', 'For'])
+    >>> check(SOURCE_FILE, 'count_dollars_upward', ['While', 'For'])
     True
     """
     "*** YOUR CODE HERE ***"
@@ -149,17 +180,17 @@ def print_move(origin, destination):
     """Print instructions to move a disk."""
     print("Move the top disk from rod", origin, "to rod", destination)
 
-def move_stack(n, start, end):
-    """Print the moves required to move n disks on the start pole to the end
+def move_stack(num, start, end):
+    """Print the moves required to move num disks on the start pole to the end
     pole without violating the rules of Towers of Hanoi.
 
-    n -- number of disks
+    num -- number of disks
     start -- a pole position, either 1, 2, or 3
     end -- a pole position, either 1, 2, or 3
 
     There are exactly three poles, and start and end must be different. Assume
-    that the start pole has at least n disks of increasing size, and the end
-    pole is either empty or has a top disk larger than the top n start disks.
+    that the start pole has at least num disks of increasing size, and the end
+    pole is either empty or has a top disk larger than the top num start disks.
 
     >>> move_stack(1, 1, 3)
     Move the top disk from rod 1 to rod 3
@@ -189,7 +220,7 @@ def make_anonymous_factorial():
     120
     >>> from construct_check import check
     >>> # ban any assignments or recursion
-    >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial',
+    >>> check(SOURCE_FILE, 'make_anonymous_factorial',
     ...     ['Assign', 'AnnAssign', 'AugAssign', 'NamedExpr', 'FunctionDef', 'Recursion'])
     True
     """

@@ -8,6 +8,9 @@ test = {
           'code': r"""
           >>> p0 = [2, 2, 3]
           >>> p1 = [6, 1, 2]
+          >>> get_time([p0, p1], 0, 1)
+          afd44fb791277b75e0e049a925d0aca9
+          # locked
           >>> fastest_words({'words': ['What', 'great', 'luck'], 'times': [p0, p1]})
           4a4e62b364d558f02688a55484282829
           # locked
@@ -1043,7 +1046,7 @@ test = {
       ],
       'scored': True,
       'setup': r"""
-      >>> from cats import fastest_words
+      >>> from cats import fastest_words, get_time
       """,
       'teardown': '',
       'type': 'doctest'

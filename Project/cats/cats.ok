@@ -1,6 +1,6 @@
 {
     "name": "Cats Project",
-    "endpoint": "cal/cs61a/fa24/cats",
+    "endpoint": "cal/cs61a/sp26/cats",
     "src": [
         "utils.py",
         "cats.py"
